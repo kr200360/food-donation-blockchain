@@ -1,0 +1,34 @@
+:root {
+  color-scheme: light;
+  --page-bg:
+    radial-gradient(circle at top left, rgba(244, 184, 96, 0.26), transparent 26%),
+    radial-gradient(circle at top right, rgba(29, 122, 114, 0.18), transparent 24%),
+    linear-gradient(180deg, #f6f8fb 0%, #edf3f8 100%);
+  --text-main: #102241;
+}
+
+* {
+  box-sizing: border-box;
+}
+
+html {
+  scroll-behavior: smooth;
+}
+
+body {
+  margin: 0;
+  min-width: 320px;
+  background: var(--page-bg);
+  color: var(--text-main);
+  font-family: "Plus Jakarta Sans", "Segoe UI", sans-serif;
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+}
+
+#root {
+  min-height: 100vh;
+}
+
+a {
+  color: inherit;
+}
