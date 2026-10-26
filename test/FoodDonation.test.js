@@ -48,6 +48,47 @@ describe("FoodDonation", function () {
     assert.strictEqual(Number(stats.expired), 1);
   });
 
+  it("prevents a donor from claiming their own donation", async function () {
+    const { contract, donor } = await deployFixture();
+    const latestBlock = await ethers.provider.getBlock("latest");
+    const expiresAt = latestBlock.timestamp + 3600;
+
+    await contract.connect(donor).createDonation("Fresh fruit", 4, expiresAt);
+
+    await expectRevert(
+      contract.connect(donor).claimDonation(1),
+      "Donor cannot claim own donation"
+    );
+  });
+
+  it("rejects zero quantity", async function () {
+    const { contract, donor } = await deployFixture();
+    const latestBlock = await ethers.provider.getBlock("latest");
+    const expiresAt = latestBlock.timestamp + 3600;
+
+    await expectRevert(
+      contract.connect(donor).createDonation("Fresh fruit", 0, expiresAt),
+      "Quantity must be greater than zero"
+    );
+  });
+
+  it("restricts admin moderation to the deployer", async function () {
+    const { contract, admin, donor, student } = await deployFixture();
+    const latestBlock = await ethers.provider.getBlock("latest");
+    const expiresAt = latestBlock.timestamp + 3600;
+
+    await contract.connect(donor).createDonation("Fresh fruit", 4, expiresAt);
+
+    await expectRevert(
+      contract.connect(student).adminCloseDonation(1),
+      "Only admin can perform this action"
+    );
+
+    await contract.connect(admin).adminCloseDonation(1);
+    const donation = await contract.getDonation(1);
+    assert.strictEqual(Number(donation.status), 3);
+  });
+
   it("prevents claiming donations after expiry", async function () {
     const { contract, donor, student } = await deployFixture();
     const latestBlock = await ethers.provider.getBlock("latest");
