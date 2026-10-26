@@ -394,6 +394,12 @@ function App() {
       return;
     }
 
+    const quantity = Number(form.quantity);
+    if (!Number.isSafeInteger(quantity) || quantity <= 0) {
+      setStatusMessage("Quantity must be a positive whole number.");
+      return;
+    }
+
     if (!form.expiryTime) {
       setStatusMessage("Expiry time is required so the donation can auto-close.");
       return;
@@ -411,7 +417,6 @@ function App() {
       setStatusMessage("Submitting donation to the blockchain...");
 
       const contract = await getContract();
-      const quantity = Number(form.quantity);
       let tx;
 
       if (form.pickupTime.trim() || form.pickupLocation.trim()) {
