@@ -73,6 +73,8 @@ export const getContract = async () => {
   const ethereum = getEthereum();
   await ensureHardhatNetwork();
 
+  // frontend/package.json uses Ethers v6, where BrowserProvider replaces
+  // the v5 Web3Provider API.
   const provider = new ethers.BrowserProvider(ethereum);
   const signer = await provider.getSigner();
 
